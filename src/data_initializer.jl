@@ -81,7 +81,10 @@ function read_tree(tree_file::String)
 
   str = reval("""
               library(\"ape\")
-              tree     <- read.tree('$tree_file') 
+              tree     <- read.tree('$tree_file')
+              if(!inherits(tree, "phylo")) stop("Your tree file does not appear to contain a proper phylogeny. Please check the formatting.")
+              if(!is.binary(tree)) stop("Sorry, Tapestree only works with binary trees.")
+              if(any(tree$edge.length == 0)) stop("Sorry, Tapestree cannot handle zero length edges")
               tree     <- reorder(tree)
               edge     <- .subset2(tree,'edge')
               Nnode    <- .subset2(tree,'Nnode')
